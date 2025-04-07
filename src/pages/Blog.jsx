@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useQuery } from '@tanstack/react-query'
 import { CreatePost } from '../components/CreatePost'
 import { PostFilter } from '../components/PostFilter'
@@ -21,6 +22,14 @@ export function Blog() {
 
   return (
     <div className='max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl'>
+      <Helmet>
+        <title>Full-Stack React Blog</title>
+        <meta
+          name='description'
+          content='A simple blog application built with React and Express'
+        />
+      </Helmet>
+
       <Header />
       <h1 className='text-2xl font-bold text-gray-800 mb-4'>Blog</h1>
 

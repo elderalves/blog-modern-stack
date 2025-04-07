@@ -7,7 +7,8 @@ import {
 import { Blog } from './pages/Blog'
 import { Signup } from './pages/Signup'
 import { Login } from './pages/Login'
-import { getPosts } from './api/posts'
+import { ViewPost } from './pages/ViewPost'
+import { getPostById, getPosts } from './api/posts'
 import { getUserInfo } from './api/users'
 
 export const routes = [
@@ -54,5 +55,39 @@ export const routes = [
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/posts/:postId/:slug?',
+    loader: async ({ params }) => {
+      const postId = params.postId
+      const queryClient = new QueryClient()
+      const post = await getPostById(postId)
+
+      await queryClient.prefetchQuery({
+        queryKey: ['post', postId],
+        queryFn: () => post,
+      })
+
+      if (post?.author) {
+        await queryClient.prefetchQuery({
+          queryKey: ['users', post.author],
+          queryFn: () => getUserInfo(post.author),
+        })
+      }
+
+      return {
+        dehydrateState: dehydrate(queryClient),
+        postId,
+      }
+    },
+    Component() {
+      const { dehydrateState, postId } = useLoaderData()
+
+      return (
+        <HydrationBoundary state={dehydrateState}>
+          <ViewPost postId={postId} />
+        </HydrationBoundary>
+      )
+    },
   },
 ]
