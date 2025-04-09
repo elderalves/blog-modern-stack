@@ -9,7 +9,8 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "lint": "eslint src",
     "docker:build": "docker build -t blog-backend .",
-    "docker:run": "docker run -p 8080:8080 blog-backend"
+    "docker:run": "docker run -p 8080:8080 blog-backend",
+    "e2e": "node src/e2e.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
