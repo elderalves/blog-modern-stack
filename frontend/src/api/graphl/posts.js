@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client/core/index.js';
+import { gql } from '@apollo/client/core/index.js'
 
 export const POST_FIELDS = gql`
   fragment PostFields on Post {

@@ -30,7 +30,7 @@ export function Blog() {
         sortOrder,
       },
     },
-  });
+  })
 
   const posts = postsQuery.data?.postsByAuthor ?? postsQuery.data?.posts ?? []
 

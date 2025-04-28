@@ -35,7 +35,7 @@ async function createProdServer() {
         path.resolve(__dirname, 'dist/client/index.html'),
         'utf-8',
       )
-      const render = (await import('./dist/server/entry-server.js')).render
+      const render = (await import('../dist/server/entry-server.js')).render
 
       const appHTML = await render(req)
       const html = template.replace('<!--ssr-outlet-->', appHTML)

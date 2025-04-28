@@ -8,7 +8,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { DevTool } from '@hookform/devtools'
 // import { createPost } from '../api/posts'
 import { useAuth } from '../contexts/AuthContext'
-import { CREATE_POST, GET_POSTS, GET_POSTS_BY_AUTHOR } from '../api/graphl/posts'
+import {
+  CREATE_POST,
+  GET_POSTS,
+  GET_POSTS_BY_AUTHOR,
+} from '../api/graphl/posts'
 
 export function CreatePost() {
   const [token] = useAuth()
@@ -44,15 +48,15 @@ export function CreatePost() {
   const [createPost, { loading, data }] = useGraphQLMutation(CREATE_POST, {
     variables: {
       title,
-      contents
+      contents,
     },
     context: {
       headers: {
         Authorization: `Bearer ${token}`,
-      }
+      },
     },
     refetchQueries: [GET_POSTS, GET_POSTS_BY_AUTHOR],
-  });
+  })
 
   const onSubmit = () => {
     // createPostMutation.mutate()
@@ -122,9 +126,11 @@ export function CreatePost() {
 
         {data?.createPost ? (
           <>
-            <br/>
+            <br />
             Post{' '}
-            <Link to={`/posts/${data.createPost.id}/${slug(data.createPost.title)}`}>
+            <Link
+              to={`/posts/${data.createPost.id}/${slug(data.createPost.title)}`}
+            >
               {data.createPost.title}
             </Link>{' '}
             created successfully!

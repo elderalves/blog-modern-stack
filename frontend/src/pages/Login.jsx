@@ -2,7 +2,6 @@ import { useState } from 'react'
 // import { useMutation } from '@tanstack/react-query'
 import { useMutation as useGraphQLMutation } from '@apollo/client/react/index.js'
 import { useNavigate, Link } from 'react-router-dom'
-import { login } from '../api/users'
 import { useAuth } from '../contexts/AuthContext'
 import { LOGIN_USER } from '../api/graphl/users'
 
@@ -29,9 +28,8 @@ export function Login() {
     },
     onError: () => {
       alert('Failed to login, please try again')
-    }
-    }
-  );
+    },
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault()

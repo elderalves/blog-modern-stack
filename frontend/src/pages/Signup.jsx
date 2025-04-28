@@ -24,7 +24,7 @@ export function Signup() {
     onError: () => {
       alert('Failed to create user, please try again')
     },
-  });
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault()

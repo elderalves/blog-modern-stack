@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { ApolloProvider } from '@apollo/client/react/index.js'
 import { ApolloClient, InMemoryCache } from '@apollo/client/core/index.js'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 const apolloClient = new ApolloClient({
   uri: import.meta.env.VITE_GRAPHQL_URL,
