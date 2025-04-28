@@ -1,10 +1,14 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+// import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation as useGraphQLMutation } from '@apollo/client/react/index.js'
 import { useForm, useWatch } from 'react-hook-form'
+import { Link } from 'react-router-dom'
+import slug from 'slug'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DevTool } from '@hookform/devtools'
-import { createPost } from '../api/posts'
+// import { createPost } from '../api/posts'
 import { useAuth } from '../contexts/AuthContext'
+import { CREATE_POST, GET_POSTS, GET_POSTS_BY_AUTHOR } from '../api/graphl/posts'
 
 export function CreatePost() {
   const [token] = useAuth()
@@ -24,7 +28,7 @@ export function CreatePost() {
     resolver: zodResolver(schema),
   })
 
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
   const title = useWatch({
     control,
     name: 'createTitle',
@@ -32,13 +36,27 @@ export function CreatePost() {
 
   const { contents } = getValues()
 
-  const createPostMutation = useMutation({
-    mutationFn: () => createPost(token, { title, contents }),
-    onSuccess: () => queryClient.invalidateQueries(['posts']),
-  })
+  // const createPostMutation = useMutation({
+  //   mutationFn: () => createPost(token, { title, contents }),
+  //   onSuccess: () => queryClient.invalidateQueries(['posts']),
+  // })
+
+  const [createPost, { loading, data }] = useGraphQLMutation(CREATE_POST, {
+    variables: {
+      title,
+      contents
+    },
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    },
+    refetchQueries: [GET_POSTS, GET_POSTS_BY_AUTHOR],
+  });
 
   const onSubmit = () => {
-    createPostMutation.mutate()
+    // createPostMutation.mutate()
+    createPost()
   }
 
   if (!token) {
@@ -91,16 +109,27 @@ export function CreatePost() {
         <button
           type='submit'
           className='w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50'
-          disabled={!title || createPostMutation.isPending}
+          disabled={!title || loading}
         >
-          {createPostMutation.isPending ? 'Creating...' : 'Create Post'}
+          {loading ? 'Creating...' : 'Create Post'}
         </button>
 
-        {createPostMutation.isSuccess && (
+        {/* {data?.createPost && (
           <p className='mt-3 text-green-600 font-medium'>
             Post created successfully!
           </p>
-        )}
+        )} */}
+
+        {data?.createPost ? (
+          <>
+            <br/>
+            Post{' '}
+            <Link to={`/posts/${data.createPost.id}/${slug(data.createPost.title)}`}>
+              {data.createPost.title}
+            </Link>{' '}
+            created successfully!
+          </>
+        ) : null}
       </form>
       <DevTool control={control} />
     </div>

@@ -1,22 +1,35 @@
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+// import { useMutation } from '@tanstack/react-query'
+import { useMutation as useGraphQLMutation } from '@apollo/client/react/index.js'
 import { useNavigate, Link } from 'react-router-dom'
-import { signup } from '../api/users'
+// import { signup } from '../api/users'
+import { SIGNUP_USER } from '../api/graphl/users'
 
 export function Signup() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  const signupMutation = useMutation({
-    mutationFn: () => signup({ username, password }),
-    onSuccess: () => navigate('/login'),
-    onError: () => alert('Failed to create user, please try again'),
-  })
+  // const signupMutation = useMutation({
+  //   mutationFn: () => signup({ username, password }),
+  //   onSuccess: () => navigate('/login'),
+  //   onError: () => alert('Failed to create user, please try again'),
+  // })
+
+  const [signupUser, { loading }] = useGraphQLMutation(SIGNUP_USER, {
+    variables: { username, password },
+    onCompleted: () => {
+      navigate('/login')
+    },
+    onError: () => {
+      alert('Failed to create user, please try again')
+    },
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    signupMutation.mutate()
+    // signupMutation.mutate()
+    signupUser()
   }
 
   return (
@@ -50,8 +63,8 @@ export function Signup() {
       <br />
       <input
         type='submit'
-        value={signupMutation.isPending ? 'Signing up...' : 'Sign up'}
-        disabled={!username || !password || signupMutation.isPending}
+        value={loading ? 'Signing up...' : 'Sign up'}
+        disabled={!username || !password || loading}
         className='bg-blue-500 text-white px-4 py-2 rounded'
       />
     </form>

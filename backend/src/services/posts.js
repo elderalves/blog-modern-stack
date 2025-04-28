@@ -18,7 +18,7 @@ export async function listAllPosts(options) {
 }
 
 export async function listPostsByAuthor(authorUsername, options) {
-  const user = await User.findOne({ username: authorUsername })
+  const user = await User.findOne({ username: { $regex: authorUsername, $options: 'i' } })
   if (!user) return []
   return await listPosts({ author: user._id }, options)
 }
